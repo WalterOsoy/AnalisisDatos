@@ -122,19 +122,6 @@ BEGIN
 		    VALUES (SRC.[SK_Partes], SRC.[SK_Geografia], SRC.[SK_Clientes], SRC.[DateKey], SRC.[ID_Batch], SRC.[ID_SourceSystem], SRC.[ID_Orden], SRC.[Total_Orden], SRC.[Fecha_Orden], SRC.[ID_StatusOrden], SRC.[NombreStatus], SRC.[ID_Descuento], SRC.[NombreDescuento], SRC.[PorcentajeDescuento], SRC.[ID_DetalleOrden], SRC.[Cantidad]);-- Fin Insertar cuando no existe
 		-- Fin Inserta cuando no existe
 
-		-- Obtiene la ultima fecha de ejecucion
-		/*
-        SET @RowsAffected =@@ROWCOUNT
-
-		SELECT @MaxFechaEjecucion=MAX(MaxFechaEjecucion)
-		FROM(
-			SELECT MAX(Fecha_Orden) as MaxFechaEjecucion
-			FROM FACT.Orden
-			UNION
-			SELECT MAX(FechaModificacionSource)  as MaxFechaEjecucion
-			FROM FACT.Orden
-		)AS A
-		*/
 		-- Fin obtiene la ultima fecha de ejecucion
 
 		UPDATE FactLog
@@ -161,3 +148,8 @@ SELECT * FROM Dimension.Geografia
 
 UPDATE Dimension.Geografia
 set  FechaInicioValidez = '2000-01-01'
+
+select * from Fact.Orden
+select * from staging.Orden
+insert into Fact.Orden(ID_Orden, ID_Cliente, ID_StatusOrden, ID_DetalleOrden, ID_Descuento, Total_Orden, PorcentajeDescuento, Cantidad, NombreDescuento, NombreStatus, Fecha_Orden)
+values (1,1,1,1,1,180.00, 0.10,2,'Promocion de Invierno','Ingresada','2021-09-20 10:32:56.983')
