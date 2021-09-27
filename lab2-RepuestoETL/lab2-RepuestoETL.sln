@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "lab2-RepuestoETL", "lab2-RepuestoETL\lab2-RepuestoETL.dtproj", "{5F5D144E-D297-4563-976A-02DF33F2BDBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F5D144E-D297-4563-976A-02DF33F2BDBC}.Development|Default.ActiveCfg = Development
+		{5F5D144E-D297-4563-976A-02DF33F2BDBC}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8FFDAF0E-0452-4D6D-838C-0A2E17F27E08}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,998 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="9/20/2021 10:18:02 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-GQ6KTLK"
+  DTS:CreatorName="DESKTOP-GQ6KTLK\walte"
+  DTS:DTSID="{E06E40A5-9794-4481-BB5B-0C0B6C3B75AE}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="4106"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionBuild="4"
+  DTS:VersionGUID="{5C381B0D-DD41-4C6D-ACDF-C8EC4F0954E4}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[localhost.RepuestosWeb]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{169DBE33-C05C-41C5-90A1-2407621D9B1C}"
+      DTS:ObjectName="localhost.RepuestosWeb">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=RepuestosWeb;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[localhost.RepuestosWebDWH]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6AFDF64C-D4EA-4ACD-8E51-04C147D39A87}"
+      DTS:ObjectName="localhost.RepuestosWebDWH">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=RepuestosWebDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Carga de Fact"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Contenedor de secuencias"
+      DTS:DTSID="{f11736ad-24e1-466e-a0d3-6ac49f0d80c0}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Carga de Fact">
+      <DTS:Variables>
+        <DTS:Variable
+          DTS:CreationName=""
+          DTS:DTSID="{B43881E0-FB0B-446B-8569-2B10521F5BC9}"
+          DTS:IncludeInDebugDump="6789"
+          DTS:Namespace="User"
+          DTS:ObjectName="vFechaEjecucion">
+          <DTS:VariableValue
+            DTS:DataType="7">6/9/2021 9:40:17 PM</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Carga de Fact\Actualizar Fact"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarea Ejecutar SQL"
+          DTS:DTSID="{b1a40d0c-8467-4934-b3e1-61deab33ab2f}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Actualizar Fact"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6AFDF64C-D4EA-4ACD-8E51-04C147D39A87}"
+              SQLTask:SqlStatementSource="EXEC USP_MergeFact" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Carga de Fact\Carga sobre Staging"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Tarea Flujo de datos"
+          DTS:DTSID="{c3d36e4b-cbac-4b56-9d15-073790dc14e4}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Carga sobre Staging"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="Destino de OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; Todos los derechos reservados; http://www.microsoft.com/sql/support;4"
+                  description="Destino de OLE DB"
+                  name="Carga staigin"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Número de segundos antes de que se agote el tiempo de espera de un comando. Un valor de 0 indica un tiempo de espera infinito."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica el nombre del objeto de base de datos usado para abrir un conjunto de filas."
+                      name="OpenRowset">[staging].[Orden]</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica la variable que contiene el nombre del objeto de base de datos usado para abrir un conjunto de filas."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="Comando SQL para ejecutar."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica la página de códigos de columna para utilizar cuando la información de página de códigos no está disponible en el origen de datos."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Fuerza el uso del valor de la propiedad DefaultCodePage al describir datos de caracteres."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica el modo utilizado para obtener acceso a la base de datos."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica si los valores proporcionados para columnas de identidad se van a copiar al destino. Si es False, los valores de las columnas de identidad se generan automáticamente en el destino. Solo se aplica si está activada la carga rápida."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indica si las columnas que contienen NULL tendrán NULL insertado en el destino. Si es False, las columnas que contienen NULL tendrán sus valores predeterminados insertados en el destino. Solo se aplica si está activada la carga rápida."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica opciones para usar con la carga rápida. Solo se aplica si está activada la carga rápida."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica cuándo se emiten confirmaciones durante la inserción de datos. El valor 0 especifica que se emitirá una confirmación al final de la inserción de datos. Solo se aplica si está activada la carga rápida."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[localhost.RepuestosWebDWH]"
+                      connectionManagerRefId="Package.ConnectionManagers[localhost.RepuestosWebDWH]"
+                      description="La conexión de tiempo de ejecución OLE DB usada para obtener acceso a la base de datos."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB]"
+                      errorOrTruncationOperation="Insertar"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="Entrada de destino de OLE DB">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_Cliente]"
+                          cachedDataType="i4"
+                          cachedName="ID_Cliente"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Cliente]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Cliente]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_Orden]"
+                          cachedDataType="i4"
+                          cachedName="ID_Orden"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Orden]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_DetalleOrden]"
+                          cachedDataType="i4"
+                          cachedName="ID_DetalleOrden"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_DetalleOrden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_DetalleOrden]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_Descuento]"
+                          cachedDataType="i4"
+                          cachedName="ID_Descuento"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Descuento]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Descuento]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_StatusOrden]"
+                          cachedDataType="i4"
+                          cachedName="ID_StatusOrden"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_StatusOrden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_StatusOrden]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[Total_Orden]"
+                          cachedDataType="numeric"
+                          cachedName="Total_Orden"
+                          cachedPrecision="12"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Total_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Total_Orden]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[Fecha_Orden]"
+                          cachedDataType="dbTimeStamp"
+                          cachedName="Fecha_Orden"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Fecha_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Fecha_Orden]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[Cantidad]"
+                          cachedDataType="i4"
+                          cachedName="Cantidad"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Cantidad]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Cantidad]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[NombreDescuento]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="200"
+                          cachedName="NombreDescuento"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[NombreDescuento]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreDescuento]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[PorcentajeDescuento]"
+                          cachedDataType="numeric"
+                          cachedName="PorcentajeDescuento"
+                          cachedPrecision="2"
+                          cachedScale="2"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[PorcentajeDescuento]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[PorcentajeDescuento]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[NombreStatus]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="100"
+                          cachedName="NombreStatus"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[NombreStatus]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreStatus]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_Partes]"
+                          cachedDataType="i4"
+                          cachedName="ID_Partes"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Partes]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Partes]" />
+                        <inputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].Columns[ID_Ciudad]"
+                          cachedDataType="i4"
+                          cachedName="ID_Ciudad"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Ciudad]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Ciudad]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Orden]"
+                          dataType="i4"
+                          name="ID_Orden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Cliente]"
+                          dataType="i4"
+                          name="ID_Cliente" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_StatusOrden]"
+                          dataType="i4"
+                          name="ID_StatusOrden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_DetalleOrden]"
+                          dataType="i4"
+                          name="ID_DetalleOrden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Descuento]"
+                          dataType="i4"
+                          name="ID_Descuento" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Total_Orden]"
+                          dataType="numeric"
+                          name="Total_Orden"
+                          precision="6"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[PorcentajeDescuento]"
+                          dataType="numeric"
+                          name="PorcentajeDescuento"
+                          precision="6"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Cantidad]"
+                          dataType="i4"
+                          name="Cantidad" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[NombreDescuento]"
+                          codePage="1252"
+                          dataType="str"
+                          length="300"
+                          name="NombreDescuento" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[NombreStatus]"
+                          codePage="1252"
+                          dataType="str"
+                          length="300"
+                          name="NombreStatus" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[Fecha_Orden]"
+                          dataType="dbTimeStamp"
+                          name="Fecha_Orden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Partes]"
+                          dataType="i4"
+                          name="ID_Partes" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB].ExternalColumns[ID_Ciudad]"
+                          dataType="i4"
+                          name="ID_Ciudad" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Outputs[Salida de error de destino de OLE DB]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Salida de error de destino de OLE DB"
+                      synchronousInputId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Outputs[Salida de error de destino de OLE DB].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Outputs[Salida de error de destino de OLE DB].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Outputs[Salida de error de destino de OLE DB].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Outputs[Salida de error de destino de OLE DB].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="Origen de OLE DB;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; Todos los derechos reservados; http://www.microsoft.com/sql/support;7"
+                  description="Origen de OLE DB"
+                  name="Fuente Orden"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Número de segundos antes de que se agote el tiempo de espera de un comando. Un valor de 0 indica un tiempo de espera infinito."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica el nombre del objeto de base de datos usado para abrir un conjunto de filas."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Especifica la variable que contiene el nombre del objeto de base de datos usado para abrir un conjunto de filas."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="Comando SQL para ejecutar."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT 
+    [PR].[ID_Partes],
+	[CI].[ID_Ciudad],
+	[CL].[ID_Cliente],
+	[O].[ID_Orden],
+    [DO].[ID_DetalleOrden],
+    [D].[ID_Descuento],
+    [SO].[ID_StatusOrden],
+    [O].[Total_Orden],
+    [O].[Fecha_Orden],
+    [DO].[Cantidad],
+    [D].[NombreDescuento],
+    [D].[PorcentajeDescuento],
+    [SO].[NombreStatus]
+FROM DBO.Orden O
+     INNER JOIN DBO.Detalle_orden DO 
+		ON O.ID_Orden = DO.ID_Orden
+     INNER JOIN DBO.Descuento D 
+		ON D.ID_Descuento = DO.ID_Descuento
+     INNER JOIN DBO.StatusOrden SO 
+		ON SO.ID_StatusOrden = O.ID_StatusOrden
+	INNER JOIN DBO.Ciudad CI
+		ON O.ID_Ciudad = CI.ID_Ciudad
+	INNER JOIN DBO.Clientes CL
+		ON O.ID_Ciudad = CL.ID_Cliente
+	INNER JOIN DBO.Partes PR
+		ON DO.ID_Partes = PR.ID_Partes
+	WHERE ((Fecha_Orden&gt;?))</property>
+                    <property
+                      dataType="System.String"
+                      description="Variable que contiene el comando SQL para ejecutar."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica la página de códigos de columna para utilizar cuando la información de página de códigos no está disponible en el origen de datos."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Fuerza el uso del valor de la propiedad DefaultCodePage al describir datos de caracteres."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Especifica el modo utilizado para obtener acceso a la base de datos."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="Asignaciones entre los parámetros del comando SQL y las variables."
+                      name="ParameterMapping">"0:Input",{B43881E0-FB0B-446B-8569-2B10521F5BC9};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[localhost.RepuestosWeb]"
+                      connectionManagerRefId="Package.ConnectionManagers[localhost.RepuestosWeb]"
+                      description="La conexión de tiempo de ejecución OLE DB usada para obtener acceso a la base de datos."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB]"
+                      name="Salida de origen de OLE DB">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Partes]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Partes]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Partes]"
+                          name="ID_Partes"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Ciudad]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Ciudad]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Ciudad]"
+                          name="ID_Ciudad"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Cliente]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Cliente]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Cliente]"
+                          name="ID_Cliente"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Orden]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Orden]"
+                          name="ID_Orden"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_DetalleOrden]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_DetalleOrden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_DetalleOrden]"
+                          name="ID_DetalleOrden"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Descuento]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Descuento]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_Descuento]"
+                          name="ID_Descuento"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_StatusOrden]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_StatusOrden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[ID_StatusOrden]"
+                          name="ID_StatusOrden"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Total_Orden]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Total_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Total_Orden]"
+                          name="Total_Orden"
+                          precision="12"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Fecha_Orden]"
+                          dataType="dbTimeStamp"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Fecha_Orden]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Fecha_Orden]"
+                          name="Fecha_Orden"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Cantidad]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Cantidad]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[Cantidad]"
+                          name="Cantidad"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreDescuento]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[NombreDescuento]"
+                          length="200"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreDescuento]"
+                          name="NombreDescuento"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[PorcentajeDescuento]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[PorcentajeDescuento]"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[PorcentajeDescuento]"
+                          name="PorcentajeDescuento"
+                          precision="2"
+                          scale="2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreStatus]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversión"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[NombreStatus]"
+                          length="100"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].Columns[NombreStatus]"
+                          name="NombreStatus"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Partes]"
+                          dataType="i4"
+                          name="ID_Partes" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Ciudad]"
+                          dataType="i4"
+                          name="ID_Ciudad" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Cliente]"
+                          dataType="i4"
+                          name="ID_Cliente" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Orden]"
+                          dataType="i4"
+                          name="ID_Orden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_DetalleOrden]"
+                          dataType="i4"
+                          name="ID_DetalleOrden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_Descuento]"
+                          dataType="i4"
+                          name="ID_Descuento" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[ID_StatusOrden]"
+                          dataType="i4"
+                          name="ID_StatusOrden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Total_Orden]"
+                          dataType="numeric"
+                          name="Total_Orden"
+                          precision="12"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Fecha_Orden]"
+                          dataType="dbTimeStamp"
+                          name="Fecha_Orden" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[Cantidad]"
+                          dataType="i4"
+                          name="Cantidad" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[NombreDescuento]"
+                          codePage="1252"
+                          dataType="str"
+                          length="200"
+                          name="NombreDescuento" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[PorcentajeDescuento]"
+                          dataType="numeric"
+                          name="PorcentajeDescuento"
+                          precision="2"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB].ExternalColumns[NombreStatus]"
+                          codePage="1252"
+                          dataType="str"
+                          length="100"
+                          name="NombreStatus" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB]"
+                      isErrorOut="true"
+                      name="Salida de error de origen de OLE DB">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Partes]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Partes]"
+                          name="ID_Partes" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Ciudad]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Ciudad]"
+                          name="ID_Ciudad" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Cliente]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Cliente]"
+                          name="ID_Cliente" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Orden]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Orden]"
+                          name="ID_Orden" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_DetalleOrden]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_DetalleOrden]"
+                          name="ID_DetalleOrden" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Descuento]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_Descuento]"
+                          name="ID_Descuento" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_StatusOrden]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ID_StatusOrden]"
+                          name="ID_StatusOrden" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Total_Orden]"
+                          dataType="numeric"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Total_Orden]"
+                          name="Total_Orden"
+                          precision="12"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Fecha_Orden]"
+                          dataType="dbTimeStamp"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Fecha_Orden]"
+                          name="Fecha_Orden" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Cantidad]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[Cantidad]"
+                          name="Cantidad" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[NombreDescuento]"
+                          codePage="1252"
+                          dataType="str"
+                          length="200"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[NombreDescuento]"
+                          name="NombreDescuento" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[PorcentajeDescuento]"
+                          dataType="numeric"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[PorcentajeDescuento]"
+                          name="PorcentajeDescuento"
+                          precision="2"
+                          scale="2" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[NombreStatus]"
+                          codePage="1252"
+                          dataType="str"
+                          length="100"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[NombreStatus]"
+                          name="NombreStatus" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de error de origen de OLE DB].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Carga de Fact\Carga sobre Staging.Paths[Salida de origen de OLE DB]"
+                  endId="Package\Carga de Fact\Carga sobre Staging\Carga staigin.Inputs[Entrada de destino de OLE DB]"
+                  name="Salida de origen de OLE DB"
+                  startId="Package\Carga de Fact\Carga sobre Staging\Fuente Orden.Outputs[Salida de origen de OLE DB]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Carga de Fact\Limpiar Staging"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarea Ejecutar SQL"
+          DTS:DTSID="{9870a25e-7e59-4691-b73e-6ca76aefc403}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Limpiar Staging"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6AFDF64C-D4EA-4ACD-8E51-04C147D39A87}"
+              SQLTask:SqlStatementSource="truncate table staging.Orden" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Carga de Fact\Ultima Fecha de Ejecucion"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Tarea Ejecutar SQL"
+          DTS:DTSID="{93b18109-957f-4496-a9e9-e5492a4c9fd7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Ultima Fecha de Ejecucion"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{6AFDF64C-D4EA-4ACD-8E51-04C147D39A87}"
+              SQLTask:SqlStatementSource="SELECT ISNULL(MAX(FechaEjecucion),'1900-01-01') AS UltimaFecha&#xA;&#x9;FROM Factlog"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="0"
+                SQLTask:DtsVariableName="User::vFechaEjecucion" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Carga de Fact.PrecedenceConstraints[Restricción]"
+          DTS:CreationName=""
+          DTS:DTSID="{daad4ad9-17af-4f8f-8033-ef0c886389c4}"
+          DTS:From="Package\Carga de Fact\Carga sobre Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restricción"
+          DTS:To="Package\Carga de Fact\Actualizar Fact" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Carga de Fact.PrecedenceConstraints[Restricción 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{2e7b09bc-9fdd-49e2-967d-36f41c464861}"
+          DTS:From="Package\Carga de Fact\Ultima Fecha de Ejecucion"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restricción 1"
+          DTS:To="Package\Carga de Fact\Carga sobre Staging" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Carga de Fact.PrecedenceConstraints[Restricción 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{89d5bde7-e2bd-466d-aba9-4de7ce5f05bb}"
+          DTS:From="Package\Carga de Fact\Limpiar Staging"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Restricción 2"
+          DTS:To="Package\Carga de Fact\Ultima Fecha de Ejecucion" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Carga de Fact\Actualizar Fact"
+          TopLeft="68,277" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Carga de Fact\Carga sobre Staging"
+          TopLeft="37,192" />
+        <NodeLayout
+          Size="155,42"
+          Id="Package\Carga de Fact\Limpiar Staging"
+          TopLeft="49.5,22.5" />
+        <NodeLayout
+          Size="210,42"
+          Id="Package\Carga de Fact\Ultima Fecha de Ejecucion"
+          TopLeft="43,105" />
+        <EdgeLayout
+          Id="Package\Carga de Fact.PrecedenceConstraints[Restricción]"
+          TopLeft="127,234">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="17,43"
+              Start="0,0"
+              End="17,35.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,17.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,17.5"
+                    Point2="0,21.5"
+                    Point3="4,21.5" />
+                  <mssgle:LineSegment
+                    End="13,21.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="13,21.5"
+                    Point2="17,21.5"
+                    Point3="17,25.5" />
+                  <mssgle:LineSegment
+                    End="17,35.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Carga de Fact.PrecedenceConstraints[Restricción 1]"
+          TopLeft="148,147">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-21,45"
+              Start="0,0"
+              End="-21,37.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.5"
+                    Point2="0,22.5"
+                    Point3="-4,22.5" />
+                  <mssgle:LineSegment
+                    End="-17,22.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-17,22.5"
+                    Point2="-21,22.5"
+                    Point3="-21,26.5" />
+                  <mssgle:LineSegment
+                    End="-21,37.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Carga de Fact.PrecedenceConstraints[Restricción 2]"
+          TopLeft="127,64.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="21,40.5"
+              Start="0,0"
+              End="21,33">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.25"
+                    Point2="0,20.25"
+                    Point3="4,20.25" />
+                  <mssgle:LineSegment
+                    End="17,20.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="17,20.25"
+                    Point2="21,20.25"
+                    Point3="21,24.25" />
+                  <mssgle:LineSegment
+                    End="21,33" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="282,345"
+          Size="282,388"
+          Id="Package\Carga de Fact"
+          TopLeft="59,59" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Carga de Fact\Carga sobre Staging">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="147,42"
+          Id="Package\Carga de Fact\Carga sobre Staging\Fuente Orden"
+          TopLeft="262,91" />
+        <NodeLayout
+          Size="144,42"
+          Id="Package\Carga de Fact\Carga sobre Staging\Carga staigin"
+          TopLeft="269,163" />
+        <EdgeLayout
+          Id="Package\Carga de Fact\Carga sobre Staging.Paths[Salida de origen de OLE DB]"
+          TopLeft="338.25,133">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,30"
+              Start="0,0"
+              End="0,22.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Carga de Fact\Carga sobre Staging\Fuente Orden">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Carga de Fact\Carga sobre Staging\Carga staigin">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
